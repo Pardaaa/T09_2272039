@@ -6,6 +6,14 @@ const app = express()
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 
+//Database Connect
+const db = mysql.createConnection({
+    host: 'localhost',
+    database: 'PWL',
+    user: 'root',
+    password: '',
+});
+
 //Penduduk
 app.get("/penduduk", (req, res) => {
     res.render('penduduk/index');
