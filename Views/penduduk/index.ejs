@@ -24,42 +24,54 @@
                         <tr>
                             <th scope="col">NIK</th>
                             <th scope="col">Nama</th>
-                            <th scope="col">Alamat</th>
+                            <th scope="col">Details</th>
                             <th scope="col">No KK</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th scope="row">1</th>
-                            <td>Mark</td>
-                            <td>Otto</td>
-                            <td>@mdo</td>
-                            <td>
-                                <div class="d-flex gap-2">
-                                    <form action="/editPenduduk" method="get">
-                                        <button type="submit" class="btn btn-warning">Edit</button>
-                                    </form>
-                                    <form action="" method="post"
-                                        onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                        <button type="submit" class="btn btn-danger">Hapus</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <th scope="row">2</th>
-                            <td>Jacob</td>
-                            <td>Thornton</td>
-                            <td>@fat</td>
-                            <td>@fat</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td colspan="2">Larry the Bird</td>
-                            <td>@twitter</td>
-                            <td>@twitter</td>
-                        </tr>
+                        <% penduduk.forEach(penduduk=> { %>
+                            <tr>
+                                <td>
+                                    <%= user.nik %>
+                                </td>
+                                <td>
+                                    <%= user.nama %>
+                                </td>
+                                <td>
+                                    <p>
+                                        <b>Alamat :</b>
+                                        <%= user.alamat %>
+                                    </p>
+                                    <p>
+                                        <b>Tanggal Lahir :</b>
+                                        <%= user.tgl_lahir %>
+                                    </p>
+                                    <p>
+                                        <b>Golongan Darah :</b>
+                                        <%= user.gol_darah %>
+                                    </p>
+                                    <p>
+                                        <b>Status :</b>
+                                        <%= user.status %>
+                                    </p>
+                                </td>
+                                <td>
+                                    <%= user.kartu_keluarga_id %>
+                                </td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <form action="/editPenduduk" method="get">
+                                            <button type="submit" class="btn btn-warning">Edit</button>
+                                        </form>
+                                        <form action="" method="post"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
+                                            <button type="submit" class="btn btn-danger">Hapus</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            <% }); %>
                     </tbody>
                 </table>
             </div>

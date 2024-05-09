@@ -11,6 +11,31 @@
     <!-- Navbar Start -->
     <%- include ('../layouts/navbar.ejs') %>
         <!-- Navbar End -->
+
+        <!--  Content Start  -->
+        <div class="card m-5">
+            <div class="card-header">
+                <h3>Tambah Kartu Keluarga</h3>
+            </div>
+            <div class="card-body">
+                <form action="/addKK" method="post">
+                    <div class="row mb-3">
+                        <label for="id" class="col-sm-2 col-form-label"><b>ID</b></label>
+                        <div class="col-sm-10">
+                            <input type="text" name="id" class="form-control" placeholder="2272039">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="kepalaKeluarga" class="col-sm-2 col-form-label"><b>Nama Kepala Keluarga</b></label>
+                        <div class="col-sm-10">
+                            <input type="text" name="kepalaKeluarga" class="form-control" placeholder="Nathan Raphael">
+                        </div>
+                    </div>
+                    <input type="submit" class="btn btn-primary" value="Tambahkan">
+                </form>
+            </div>
+        </div>
+        <!--  Content End  -->
 </body>
 
 </html>
