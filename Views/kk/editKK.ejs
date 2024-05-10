@@ -22,14 +22,14 @@
                     <div class="row mb-3">
                         <label for="id" class="col-sm-2 col-form-label"><b>ID</b></label>
                         <div class="col-sm-10">
-                            <input type="text" name="id" class="form-control" value="<%= kartuKeluarga.id %>">
+                            <input type="text" name="id" class="form-control" value="<%= kartuKeluarga.id %>" disabled>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="kepalaKeluarga" class="col-sm-2 col-form-label"><b>Nama Kepala Keluarga</b></label>
                         <div class="col-sm-10">
                             <input type="text" name="kepalaKeluarga" class="form-control"
-                                value="<%= kartuKeluarga.kepalaKeluarga %>">
+                                value="<%= kartuKeluarga.kepalaKeluarga %>" required>
                         </div>
                     </div>
                     <input type="submit" class="btn btn-primary" value="Edit">

@@ -21,25 +21,26 @@
                     <div class="row mb-3">
                         <label for="nik" class="col-sm-2 col-form-label"><b>NIK</b></label>
                         <div class="col-sm-10">
-                            <input type="text" name="nik" class="form-control" placeholder="3215262512040005">
+                            <input type="text" name="nik" class="form-control" placeholder="3215262512040005" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="nama" class="col-sm-2 col-form-label"><b>Nama</b></label>
                         <div class="col-sm-10">
-                            <input type="text" name="nama" class="form-control" placeholder="Nathan Raphael">
+                            <input type="text" name="nama" class="form-control" placeholder="Nathan Raphael" required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="alamat" class="col-sm-2 col-form-label"><b>Alamat</b></label>
                         <div class="col-sm-10">
-                            <input type="text" name="alamat" class="form-control" placeholder="Jl.Surya Sumantri">
+                            <input type="text" name="alamat" class="form-control" placeholder="Jl.Surya Sumantri"
+                                required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="tgl_lahir" class="col-sm-2 col-form-label"><b>Tanggal Lahir</b></label>
                         <div class="col-sm-10">
-                            <input type="date" name="tgl_lahir" class="form-control">
+                            <input type="date" name="tgl_lahir" class="form-control" required>
                         </div>
                     </div>
                     <div class="row form-group mt-2">
@@ -83,7 +84,7 @@
                         <div class="col-sm-10">
                             <select class="form-control" name="kartu_keluarga_id" required>
                                 <% kartuKeluarga.forEach(kk=> { %>
-                                    <option value=" <%=kk.id %>">
+                                    <option value="<%=kk.id %>">
                                         <%= `${kk.id} - ${kk.kepalaKeluarga}` %>
                                     </option>
                                     <% }); %>
