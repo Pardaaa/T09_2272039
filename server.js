@@ -39,14 +39,18 @@ db.connect((err) => {
     });
 
     app.get("/createCitizen", (req, res) => {
-        res.render('penduduk/createCitizen');
+        const sqlKK = 'SELECT id, kepalaKeluarga FROM kartuKeluarga';
+        db.query(sqlKK, (err, result) => {
+            if (err) throw err;
+            const kartuKeluarga = result;
+            res.render('penduduk/createCitizen', { kartuKeluarga: kartuKeluarga });
+        });
     });
 
     // Tambah data Penduduk
     app.post('/addCitizen', (req, res) => {
-        const { nik, nama, alamat, gol_darah, agama, status } = req.body;
-        const tgl_lahir = new Date(req.body.tgl_lahir);
-        const insertKK = `INSERT INTO penduduk (nik, nama, alamat, tgl_lahir, gol_darah, agama, status) VALUES ('${nik}', '${nama}', '${alamat}','${tgl_lahir}','${gol_darah}','${agama}','${status}')`;
+        const { nik, nama, alamat, tgl_lahir, gol_darah, agama, status, kartu_keluarga_id } = req.body;
+        const insertKK = `INSERT INTO penduduk (nik, nama, alamat, tgl_lahir, gol_darah, agama, status, kartu_keluarga_id) VALUES ('${nik}', '${nama}', '${alamat}','${tgl_lahir}','${gol_darah}','${agama}','${status}', '${kartu_keluarga_id}')`;
         db.query(insertKK, (err, result) => {
             if (err) throw err;
             res.redirect('/Citizen');
