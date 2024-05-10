@@ -1,19 +1,15 @@
 const express = require('express');
 const mysql = require('mysql');
 const bodyParser = require('body-parser');
+const bcrypt = require('bcryptjs');
 const app = express()
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Penduduk
-
-app.get("/editPenduduk", (req, res) => {
-    res.render('penduduk/editCitizen');
-});
-app.get("/createPenduduk", (req, res) => {
-    res.render('penduduk/createCitizen');
+app.get('/', (req, res) => {
+    res.render('login');
 });
 
 //Database Connect
@@ -28,6 +24,54 @@ db.connect((err) => {
     if (err) throw err;
     console.log("Database Success")
 
+    const sqlUserNames = 'SELECT nama FROM user';
+    db.query(sqlUserNames, (err, results) => {
+        if (err) throw err;
+
+        const userNames = results.map(user => user.nama);
+
+        app.locals.userNames = userNames;
+    });
+
+
+    // User
+    app.get("/user", (req, res) => {
+        const sqlUser = 'SELECT * FROM user'
+        db.query(sqlUser, (err, result) => {
+            if (err) throw err;
+            const users = result;
+            res.render('user/index', { users: users });
+        })
+    })
+
+    // Tambah Data User
+    app.get("/createUser", (req, res) => {
+        res.render('user/createUser');
+    });
+
+    // Tambah Data User
+    app.post('/addUser', (req, res) => {
+        const { id, nama, email, password, role } = req.body;
+
+        bcrypt.hash(password, 10, (err, hashedPassword) => {
+            if (err) {
+                console.error('Error hashing password:', err);
+                res.status(500).send('Internal Server Error');
+                return;
+            }
+
+            const insertUser = `INSERT INTO user (id, nama, email, password, role) VALUES (?, ?, ?, ?, ?)`;
+            db.query(insertUser, [id, nama, email, hashedPassword, role], (err, result) => {
+                if (err) {
+                    console.error('Error adding user:', err);
+                    res.status(500).send('Internal Server Error');
+                    return;
+                }
+                res.redirect('/user');
+            });
+        });
+    });
+
     // Penduduk
     app.get("/Citizen", (req, res) => {
         const sqlCitizen = 'SELECT * FROM penduduk'
@@ -38,13 +82,9 @@ db.connect((err) => {
         })
     });
 
+    // Tambah Data Penduduk
     app.get("/createCitizen", (req, res) => {
-        const sqlKK = 'SELECT id, kepalaKeluarga FROM kartuKeluarga';
-        db.query(sqlKK, (err, result) => {
-            if (err) throw err;
-            const kartuKeluarga = result;
-            res.render('penduduk/createCitizen', { kartuKeluarga: kartuKeluarga });
-        });
+        res.render('penduduk/createCitizen');
     });
 
     // Tambah data Penduduk
@@ -57,10 +97,6 @@ db.connect((err) => {
         });
     });
 
-    app.get("/editCitizen", (req, res) => {
-        res.render('penduduk/editCitizen');
-    });
-
     // KK
     app.get("/keluarga", (req, res) => {
         const sqlKK = 'SELECT * FROM kartuKeluarga'
@@ -71,11 +107,12 @@ db.connect((err) => {
         })
     });
 
+    // Tambah Data Kartu Keluarga
     app.get("/createKeluarga", (req, res) => {
         res.render('kk/createKK');
     });
 
-    // Tambah data Kartu Keluarga
+    // Tambah Data Kartu Keluarga
     app.post('/addKK', (req, res) => {
         const { id, kepalaKeluarga } = req.body;
         const insertKK = `INSERT INTO kartuKeluarga (id, kepalaKeluarga) VALUES ('${id}', '${kepalaKeluarga}')`;
