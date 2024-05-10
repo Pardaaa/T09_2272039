@@ -28,15 +28,34 @@ db.connect((err) => {
     if (err) throw err;
     console.log("Database Success")
 
-    // app.get("/penduduk", (req, res) => {
-    //     const sqlCitizen = 'SELECT * FROM kartuKeluarga'
-    //     db.query(sqlCitizen, (err, result) => {
-    //         if (err) throw err;
-    //         const penduduk = result;
-    //         res.render('penduduk/index', { penduduk: penduduk });
-    //     })
-    // });
+    // Penduduk
+    app.get("/Citizen", (req, res) => {
+        const sqlCitizen = 'SELECT * FROM penduduk'
+        db.query(sqlCitizen, (err, result) => {
+            if (err) throw err;
+            const penduduk = result;
+            res.render('penduduk/index', { penduduk: penduduk });
+        })
+    });
 
+    app.get("/createCitizen", (req, res) => {
+        res.render('penduduk/createCitizen');
+    });
+
+    // Tambah data Penduduk
+    app.post('/addCitizen', (req, res) => {
+        const { nik, nama, alamat, gol_darah, agama, status } = req.body;
+        const tgl_lahir = new Date(req.body.tgl_lahir);
+        const insertKK = `INSERT INTO penduduk (nik, nama, alamat, tgl_lahir, gol_darah, agama, status) VALUES ('${nik}', '${nama}', '${alamat}','${tgl_lahir}','${gol_darah}','${agama}','${status}')`;
+        db.query(insertKK, (err, result) => {
+            if (err) throw err;
+            res.redirect('/Citizen');
+        });
+    });
+
+    app.get("/editCitizen", (req, res) => {
+        res.render('penduduk/editCitizen');
+    });
 
     // KK
     app.get("/keluarga", (req, res) => {

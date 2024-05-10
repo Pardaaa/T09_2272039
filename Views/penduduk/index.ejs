@@ -15,7 +15,7 @@
         <!--  Content Start -->
         <div class="card m-5">
             <div class="card-header">
-                <a href="/createPenduduk" role="button" class="btn btn-success m-2">Tambah Penduduk</a>
+                <a href="/createCitizen" role="button" class="btn btn-success m-2">Tambah Penduduk</a>
             </div>
             <div class="card-body m-2">
                 <h3>List Of Penduduk</h3>
@@ -26,49 +26,39 @@
                             <th scope="col">Nama</th>
                             <th scope="col">Details</th>
                             <th scope="col">No KK</th>
-                            <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% penduduk.forEach(penduduk=> { %>
                             <tr>
                                 <td>
-                                    <%= user.nik %>
+                                    <%= penduduk.nik %>
                                 </td>
                                 <td>
-                                    <%= user.nama %>
+                                    <%= penduduk.nama %>
                                 </td>
                                 <td>
                                     <p>
                                         <b>Alamat :</b>
-                                        <%= user.alamat %>
+                                        <%= penduduk.alamat %>
                                     </p>
                                     <p>
                                         <b>Tanggal Lahir :</b>
-                                        <%= user.tgl_lahir %>
+                                        <% const tgl_lahir=new Date(penduduk.tgl_lahir); %>
+                                            <%= tgl_lahir.toLocaleString('id-ID', { day: 'numeric' , month: 'long' ,
+                                                year: 'numeric' }) %>
                                     </p>
                                     <p>
                                         <b>Golongan Darah :</b>
-                                        <%= user.gol_darah %>
+                                        <%= penduduk.gol_darah %>
                                     </p>
                                     <p>
                                         <b>Status :</b>
-                                        <%= user.status %>
+                                        <%= penduduk.status %>
                                     </p>
                                 </td>
                                 <td>
-                                    <%= user.kartu_keluarga_id %>
-                                </td>
-                                <td>
-                                    <div class="d-flex gap-2">
-                                        <form action="/editPenduduk" method="get">
-                                            <button type="submit" class="btn btn-warning">Edit</button>
-                                        </form>
-                                        <form action="" method="post"
-                                            onsubmit="return confirm('Apakah Anda yakin ingin menghapus data ini?');">
-                                            <button type="submit" class="btn btn-danger">Hapus</button>
-                                        </form>
-                                    </div>
+                                    <%= penduduk.kartu_keluarga_id %>
                                 </td>
                             </tr>
                             <% }); %>
