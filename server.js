@@ -48,13 +48,13 @@ db.connect((err) => {
 
     function requireRole(role) {
         return (req, res, next) => {
-        const user = req.session.user;
-        if (user && user.role === role) {
-            next();
-        } else {
-            res.redirect('/alert');
+            const user = req.session.user;
+            if (user && user.role === role) {
+                next();
+            } else {
+                res.redirect('/alert');
+            }
         }
-    }
     }
 
     app.post('/login', (req, res) => {
@@ -99,15 +99,8 @@ db.connect((err) => {
         });
     });
 
-    const sqlUserNames = 'SELECT nama FROM user';
-    db.query(sqlUserNames, (err, results) => {
-        if (err) throw err;
-        const userNames = results.map(user => user.nama);
-        app.locals.userNames = userNames;
-    });
-
     // User
-    app.get("/user", requireLogin, requireRole('admin') , (req, res) => {
+    app.get("/user", requireLogin, requireRole('admin'), (req, res) => {
         const sqlUser = 'SELECT * FROM user'
         db.query(sqlUser, (err, result) => {
             if (err) throw err;
@@ -144,7 +137,10 @@ db.connect((err) => {
 
     // Penduduk
     app.get("/Citizen", requireLogin, (req, res) => {
-        const sqlCitizen = 'SELECT * FROM penduduk'
+        const sqlCitizen = `
+        SELECT citizen.*, kartu.id, kartu.kepalaKeluarga 
+        FROM penduduk citizen 
+        LEFT JOIN kartuKeluarga kartu ON citizen.kartu_keluarga_id = kartu.id`;
         db.query(sqlCitizen, (err, result) => {
             if (err) throw err;
             const penduduk = result;
@@ -153,7 +149,7 @@ db.connect((err) => {
     });
 
     // Tambah Data Penduduk
-    app.get("/createCitizen", requireLogin,requireRole('admin'), (req, res) => {
+    app.get("/createCitizen", requireLogin, requireRole('admin'), (req, res) => {
         const sqlKK = 'SELECT * FROM kartuKeluarga'
         db.query(sqlKK, (err, result) => {
             if (err) throw err;
@@ -163,7 +159,7 @@ db.connect((err) => {
     });
 
     // Tambah data Penduduk
-    app.post('/addCitizen', requireLogin,requireRole('admin'), (req, res) => {
+    app.post('/addCitizen', requireLogin, requireRole('admin'), (req, res) => {
         const { nik, nama, alamat, tgl_lahir, gol_darah, agama, status, kartu_keluarga_id } = req.body;
         const insertCitizen = `INSERT INTO penduduk (nik, nama, alamat, tgl_lahir, gol_darah, agama, status, kartu_keluarga_id) VALUES ('${nik}', '${nama}', '${alamat}','${tgl_lahir}','${gol_darah}','${agama}','${status}', '${kartu_keluarga_id}')`;
         db.query(insertCitizen, (err, result) => {
@@ -173,7 +169,7 @@ db.connect((err) => {
     });
 
     // KK
-    app.get("/keluarga", requireLogin,  (req, res) => {
+    app.get("/keluarga", requireLogin, (req, res) => {
         const sqlKK = 'SELECT * FROM kartuKeluarga'
         db.query(sqlKK, (err, result) => {
             if (err) throw err;
@@ -183,12 +179,12 @@ db.connect((err) => {
     });
 
     // Tambah Data Kartu Keluarga
-    app.get("/createKeluarga", requireLogin,requireRole('admin'), (req, res) => {
+    app.get("/createKeluarga", requireLogin, requireRole('admin'), (req, res) => {
         res.render('kk/createKK');
     });
 
     // Tambah Data Kartu Keluarga
-    app.post('/addKK', requireLogin,requireRole('admin') ,(req, res) => {
+    app.post('/addKK', requireLogin, requireRole('admin'), (req, res) => {
         const { id, kepalaKeluarga } = req.body;
         const insertKK = `INSERT INTO kartuKeluarga (id, kepalaKeluarga) VALUES ('${id}', '${kepalaKeluarga}')`;
         db.query(insertKK, (err, result) => {
@@ -198,7 +194,7 @@ db.connect((err) => {
     });
 
     // Hapus Kartu Keluarga
-    app.post('/hapusKK/:id',requireRole('admin') , (req, res) => {
+    app.post('/hapusKK/:id', requireRole('admin'), (req, res) => {
         const kkId = req.params.id;
         const deleteKK = `DELETE FROM kartuKeluarga WHERE id = '${kkId}'`;
         db.query(deleteKK, (err, result) => {
@@ -218,7 +214,7 @@ db.connect((err) => {
         });
     });
 
-    app.post('/editKeluarga/:id', requireLogin,requireRole('admin') , (req, res) => {
+    app.post('/editKeluarga/:id', requireLogin, requireRole('admin'), (req, res) => {
         const kkId = req.params.id;
         const { id, kepalaKeluarga } = req.body;
         const updateSql = `UPDATE kartuKeluarga SET id = '${id}', kepalaKeluarga = '${kepalaKeluarga}' WHERE id = ${kkId}`;
