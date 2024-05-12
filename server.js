@@ -34,12 +34,27 @@ db.connect((err) => {
         res.render('login');
     });
 
+    app.get('/alert', (req, res) => {
+        res.render('alert');
+    });
+
     function requireLogin(req, res, next) {
         if (req.session && req.session.user) {
             next();
         } else {
             res.redirect('/');
         }
+    }
+
+    function requireRole(role) {
+        return (req, res, next) => {
+        const user = req.session.user;
+        if (user && user.role === role) {
+            next();
+        } else {
+            res.redirect('/alert');
+        }
+    }
     }
 
     app.post('/login', (req, res) => {
@@ -92,7 +107,7 @@ db.connect((err) => {
     });
 
     // User
-    app.get("/user", requireLogin, (req, res) => {
+    app.get("/user", requireLogin, requireRole('admin') , (req, res) => {
         const sqlUser = 'SELECT * FROM user'
         db.query(sqlUser, (err, result) => {
             if (err) throw err;
@@ -102,12 +117,12 @@ db.connect((err) => {
     })
 
     // Tambah Data User
-    app.get("/createUser", requireLogin, (req, res) => {
+    app.get("/createUser", requireLogin, requireRole('admin'), (req, res) => {
         res.render('user/createUser');
     });
 
     // Tambah Data User
-    app.post('/addUser', requireLogin, (req, res) => {
+    app.post('/addUser', requireLogin, requireRole('admin'), (req, res) => {
         const { id, nama, email, password, confirmPassword, role } = req.body;
 
         if (password !== confirmPassword) {
@@ -120,8 +135,6 @@ db.connect((err) => {
             const insertUser = `INSERT INTO user (id, nama, email, password, role) VALUES (?, ?, ?, ?, ?)`;
             db.query(insertUser, [id, nama, email, hashedPassword, role], (err, result) => {
                 if (err) {
-                    console.error('Error adding user:', err);
-                    res.status(500).send('Internal Server Error');
                     return;
                 }
                 res.redirect('/user');
@@ -140,7 +153,7 @@ db.connect((err) => {
     });
 
     // Tambah Data Penduduk
-    app.get("/createCitizen", requireLogin, (req, res) => {
+    app.get("/createCitizen", requireLogin,requireRole('admin'), (req, res) => {
         const sqlKK = 'SELECT * FROM kartuKeluarga'
         db.query(sqlKK, (err, result) => {
             if (err) throw err;
@@ -150,7 +163,7 @@ db.connect((err) => {
     });
 
     // Tambah data Penduduk
-    app.post('/addCitizen', requireLogin, (req, res) => {
+    app.post('/addCitizen', requireLogin,requireRole('admin'), (req, res) => {
         const { nik, nama, alamat, tgl_lahir, gol_darah, agama, status, kartu_keluarga_id } = req.body;
         const insertCitizen = `INSERT INTO penduduk (nik, nama, alamat, tgl_lahir, gol_darah, agama, status, kartu_keluarga_id) VALUES ('${nik}', '${nama}', '${alamat}','${tgl_lahir}','${gol_darah}','${agama}','${status}', '${kartu_keluarga_id}')`;
         db.query(insertCitizen, (err, result) => {
@@ -160,7 +173,7 @@ db.connect((err) => {
     });
 
     // KK
-    app.get("/keluarga", requireLogin, (req, res) => {
+    app.get("/keluarga", requireLogin,  (req, res) => {
         const sqlKK = 'SELECT * FROM kartuKeluarga'
         db.query(sqlKK, (err, result) => {
             if (err) throw err;
@@ -170,12 +183,12 @@ db.connect((err) => {
     });
 
     // Tambah Data Kartu Keluarga
-    app.get("/createKeluarga", requireLogin, (req, res) => {
+    app.get("/createKeluarga", requireLogin,requireRole('admin'), (req, res) => {
         res.render('kk/createKK');
     });
 
     // Tambah Data Kartu Keluarga
-    app.post('/addKK', requireLogin, (req, res) => {
+    app.post('/addKK', requireLogin,requireRole('admin') ,(req, res) => {
         const { id, kepalaKeluarga } = req.body;
         const insertKK = `INSERT INTO kartuKeluarga (id, kepalaKeluarga) VALUES ('${id}', '${kepalaKeluarga}')`;
         db.query(insertKK, (err, result) => {
@@ -185,7 +198,7 @@ db.connect((err) => {
     });
 
     // Hapus Kartu Keluarga
-    app.post('/hapusKK/:id', (req, res) => {
+    app.post('/hapusKK/:id',requireRole('admin') , (req, res) => {
         const kkId = req.params.id;
         const deleteKK = `DELETE FROM kartuKeluarga WHERE id = '${kkId}'`;
         db.query(deleteKK, (err, result) => {
@@ -195,7 +208,7 @@ db.connect((err) => {
     });
 
     // Edit Kartu Keluarga
-    app.get('/editKeluarga/:id', requireLogin, (req, res) => {
+    app.get('/editKeluarga/:id', requireLogin, requireRole('admin'), (req, res) => {
         const kkId = req.params.id;
         const editKK = `SELECT * FROM kartuKeluarga WHERE id = ${kkId}`;
         db.query(editKK, (err, result) => {
@@ -205,7 +218,7 @@ db.connect((err) => {
         });
     });
 
-    app.post('/editKeluarga/:id', requireLogin, (req, res) => {
+    app.post('/editKeluarga/:id', requireLogin,requireRole('admin') , (req, res) => {
         const kkId = req.params.id;
         const { id, kepalaKeluarga } = req.body;
         const updateSql = `UPDATE kartuKeluarga SET id = '${id}', kepalaKeluarga = '${kepalaKeluarga}' WHERE id = ${kkId}`;
