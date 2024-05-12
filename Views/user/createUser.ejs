@@ -18,7 +18,7 @@
                 <h3>Tambah User</h3>
             </div>
             <div class="card-body">
-                <form action="/addUser" method="post">
+                <form action="/addUser" method="post" onsubmit="return validateForm()">
                     <div class="row mb-3">
                         <label for="id" class="col-sm-2 col-form-label"><b>ID</b></label>
                         <div class="col-sm-10">
@@ -34,14 +34,21 @@
                     <div class="row mb-3">
                         <label for="email" class="col-sm-2 col-form-label"><b>Email</b></label>
                         <div class="col-sm-10">
-                            <input type="text" name="email" class="form-control" placeholder="example@example.com"
+                            <input type="email" name="email" class="form-control" placeholder="example@example.com"
                                 required>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label for="password" class="col-sm-2 col-form-label"><b>Password</b></label>
                         <div class="col-sm-10">
-                            <input type="password" name="password" class="form-control" required>
+                            <input type="password" id="password" name="password" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label for="confirmPassword" class="col-sm-2 col-form-label"><b>Re-Password</b></label>
+                        <div class="col-sm-10">
+                            <input type="password" id="confirmPassword" name="confirmPassword" class="form-control"
+                                required>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -55,6 +62,30 @@
             </div>
         </div>
         <!--  Content End  -->
+
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+            function validateForm() {
+                var password = document.getElementById("password").value;
+                var confirmPassword = document.getElementById("confirmPassword").value;
+
+                if (password !== confirmPassword) {
+                    Swal.fire({
+                        title: "Password",
+                        text: "Password Tidak Cocok!!!",
+                        icon: "error"
+                    });
+                    return false;
+                }
+                Swal.fire({
+                    position: "top-end",
+                    icon: "success",
+                    title: "Your work has been saved",
+                    showConfirmButton: false
+                });
+                return true;
+            }
+        </script>
 </body>
 
 </html>
