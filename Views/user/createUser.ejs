@@ -51,10 +51,13 @@
                                 required>
                         </div>
                     </div>
-                    <div class="row mb-3">
-                        <label for="role" class="col-sm-2 col-form-label"><b>Role</b></label>
-                        <div class="col-sm-10">
-                            <input type="text" name="role" class="form-control" required>
+                    <div class="row form-group mt-2">
+                        <label for="role" class="col-sm-2 col-form-label fw-bold">Role</label>
+                        <div class="col">
+                            <select class="form-control" name="role" required>
+                                <option value="admin">Admin</option>
+                                <option value="citizen">Citizen</option>
+                            </select>
                         </div>
                     </div>
                     <input type="submit" class="btn btn-primary" value="Tambahkan">
